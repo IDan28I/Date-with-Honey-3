@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=League+Script&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    .rotated-bg {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 100vh;
+      height: 100vw;
+      background-image: url('https://i.pinimg.com/736x/ec/6f/90/ec6f901a9087da13e971603fe6d5de84.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      transform: translate(-50%, -50%) rotate(270deg);
+      transform-origin: center center;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .screen {
+      transition: opacity 0.5s ease;
+      opacity: 1;
+      visibility: visible;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      z-index: 1;
+    }
+
+    .screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+    }
+
+    #movieOptionsScreen {
+      background-color: rgba(52, 58, 64, 0.85);
+      color: white;
+      border-radius: 1rem;
+    }
+
+    /* Estilos para el FAQ rojo vino */
+    .accordion {
+      background-color: #4a0a1e;
+      border-radius: 0.75rem;
+      box-shadow: 0 0 15px #7b1a2a99;
+      padding: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .accordion-item {
+      background-color: #660b27;
+      border: none;
+      border-radius: 0.5rem;
+      margin-bottom: 0.8rem;
+      box-shadow: 0 2px 8px #8b2231cc;
+    }
+
+    .accordion-button {
+      background-color: #7a0d36;
+      color: #f0dede;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      box-shadow: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background-color: #a61c46;
+      color: #fff0f0;
+      box-shadow: inset 0 -2px 0 #d1435b;
+    }
+
+    .accordion-button:hover {
+      background-color: #92173e;
+      color: #ffe6e6;
+    }
+
+    .accordion-body {
+      background-color: #5c0824;
+      color: #f7eaea;
+      border-radius: 0 0 0.5rem 0.5rem;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    /* Botones personalizados vino/morado */
+    .btn-wine {
+      background-color: #7a0d36;
+      color: #f0dede;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-wine:hover {
+      background-color: #92173e;
+      color: #fff0f0;
+    }
+
+    .btn-outline-wine {
+      border: 2px solid #7a0d36;
+      color: #7a0d36;
+      background-color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-wine:hover {
+      background-color: #7a0d36;
+      color: #fff0f0;
+    }
+
+    /* Lista de películas estilizada */
+    #movieList {
+      background-color: rgba(122, 13, 54, 0.8);
+      border-radius: 1rem;
+      box-shadow: 0 0 15px rgba(122, 13, 54, 0.7);
+      max-width: 400px;
+      margin: 2rem auto 0 auto;
+      padding: 0;
+      list-style: none;
+    }
+
+    #movieList li {
+      padding: 0.8rem 1.2rem;
+      margin: 0.3rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      color: #f0dede;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #movieList li:hover {
+      background-color: #a61c46;
+      color: white;
+      box-shadow: 0 4px 12px rgba(166, 28, 70, 0.8);
+    }
+
+    #movieList li.active {
+      background-color: #7a0d36;
+      color: #fff0f0;
+      font-weight: 700;
+      box-shadow: 0 0 15px #d1435b;
+    }
+  </style>
+
+  <title>Date form ❤️</title>
+</head>
+
+<body>
+  <div class="rotated-bg"></div>
+
+  <!-- Pantalla inicial -->
+  <div id="homeScreen" class="screen text-center p-5">
+    <h1 class="text-body-emphasis fst-italic">What're we gonna do today?</h1>
+    <p class="col-lg-8 mx-auto fs-5 text-muted fst-italic">
+      I create this website for our date to help you decide what you want to watch.
+    </p>
+    <div class="d-inline-flex gap-2 mb-5 text-center">
+      <button id="watchMovieBtn" class="d-inline-flex align-items-center btn btn-wine btn-lg px-4 rounded-pill"
+        type="button">
+        Watch a movie
+        <i class="bi bi-arrow-right-short fs-3"></i>
+      </button>
+      <button id="kissBtn" class="btn btn-outline-wine btn-lg px-4 rounded-pill" type="button">
+        Kiss
+      </button>
+    </div>
+
+    <!-- Sección FAQ -->
+    <div class="container mt-5">
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#answer1"
+              aria-expanded="true" aria-controls="answer1">
+              Why I made you a website?
+            </button>
+          </h2>
+          <div id="answer1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              To make it easier for you to decide! 👍🏼
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer2"
+              aria-expanded="false" aria-controls="answer2">
+              Should we have another date?
+            </button>
+          </h2>
+          <div id="answer2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              That's a very good question, and the answer is of course we should.❤️
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer3"
+              aria-expanded="false" aria-controls="answer3">
+              Why so much efffort for a online date?
+            </button>
+          </h2>
+          <div id="answer3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Because is our first date and i'm not joking about you. (You look pretty)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pantalla de opciones de películas -->
+  <div id="movieOptionsScreen" class="screen hidden text-center p-5">
+    <h2>Choose a movie</h2>
+    <ul id="movieList">
+      <li>Eternal sunshine of the spotless mind</li>
+      <li>The Lie</li>
+      <li>Tuck everlasting</li>
+      <li>Good night mommy</li>
+      <li>One Day</li>
+      <li>Me before You</li>
+      <li>Little Woman</li>
+    </ul>
+    <button id="backBtn" class="btn btn-secondary mt-4">Back</button>
+  </div>
+
+  <!-- Nueva pantalla para el botón Kiss -->
+  <div id="kissScreen" class="screen hidden text-center p-5">
+    <h2>You really wanna kiss me? 😏</h2>
+    <button id="backFromKissBtn" class="btn btn-outline-wine mt-4">Back</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+  <script>
+    const watchMovieBtn = document.getElementById('watchMovieBtn');
+    const backBtn = document.getElementById('backBtn');
+    const kissBtn = document.getElementById('kissBtn');
+    const backFromKissBtn = document.getElementById('backFromKissBtn');
+    const homeScreen = document.getElementById('homeScreen');
+    const movieOptionsScreen = document.getElementById('movieOptionsScreen');
+    const kissScreen = document.getElementById('kissScreen');
+    const movieList = document.getElementById('movieList');
+
+    watchMovieBtn.addEventListener('click', () => {
+      homeScreen.classList.add('hidden');
+      movieOptionsScreen.classList.remove('hidden');
+      kissScreen.classList.add('hidden');
+    });
+
+    backBtn.addEventListener('click', () => {
+      movieOptionsScreen.classList.add('hidden');
+      homeScreen.classList.remove('hidden');
+      kissScreen.classList.add('hidden');
+      clearActiveMovie();
+    });
+
+    kissBtn.addEventListener('click', () => {
+      homeScreen.classList.add('hidden');
+      movieOptionsScreen.classList.add('hidden');
+      kissScreen.classList.remove('hidden');
+    });
+
+    backFromKissBtn.addEventListener('click', () => {
+      kissScreen.classList.add('hidden');
+      homeScreen.classList.remove('hidden');
+      movieOptionsScreen.classList.add('hidden');
+    });
+
+    // Manejar selección de película
+    movieList.addEventListener('click', (e) => {
+      if (e.target.tagName === 'LI') {
+        clearActiveMovie();
+        e.target.classList.add('active');
+        alert("Perfect ❤️");
+      }
+    });
+
+    function clearActiveMovie() {
+      const active = movieList.querySelector('.active');
+      if (active) {
+        active.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+
+</html>
